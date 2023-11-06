@@ -20,11 +20,22 @@ export default {
     }
 
     // Proceed with the fetch request using the modified headers
-    return fetch(url, {
+    const response = await fetch(url, {
       headers: headers,
       method: request.method,
       body: request.body,
       redirect: 'follow'
     });
+
+    // Clone the response so we can modify the headers
+    const newResponse = new Response(response.body, response);
+
+    // Set CORS headers
+    newResponse.headers.set('Access-Control-Allow-Origin', '*');
+    newResponse.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    newResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-token');
+
+    // Return the modified response
+    return newResponse;
   }
 }
